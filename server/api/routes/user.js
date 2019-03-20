@@ -1,4 +1,5 @@
 const User = require('../../models/user');
+const mongoose = require('mongoose');
 
 module.exports = function (router) {
     router.get('/user/:id', function (req, res) {
@@ -24,6 +25,7 @@ module.exports = function (router) {
 
     router.post('/user', function (req, res) {
         let user = new User(req.body);
+        console.log(req.body);
         user.save(function (err, user) {
             if (err) return console.error(err);
             res.status(200).json(user);
