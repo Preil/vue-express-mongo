@@ -13,7 +13,7 @@ module.exports = function (router) {
         const endDt = new Date(Date.UTC(year, month + 1, 1, 0, 0, 0));
 
         const qry = {
-            userId: userId,
+            userId: mongoose.Types.ObjectId(userId),
             transactionDate: {
                 $gte: startDt,
                 $lt: endDt
