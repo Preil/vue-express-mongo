@@ -43,7 +43,11 @@ module.exports = function (router) {
         const pipeline = [
             {
                 $match: {
-                    userId: userId,
+                    userId: mongoose.Types.ObjectId(userId),
+                }
+            },
+            {
+                $match: {
                     transactionDate: {$lt: endDt}
                 }
             },
