@@ -98,51 +98,51 @@
 </template>
 
 <script>
-  export default {
-    name: 'EditTransaction',
-    data: () => ({
-      dialog: false,
-      transaction: {
-        id: null,
-        transactionDate: null,
-        transactionType: null,
-        description: '',
-        notes: '',
-        charge: 0.0,
-        deposit: 0.0
-      },
-      transactionTypes: [
-        { text: 'Credit Card', value: 'Credit Card' },
-        { text: 'Debit Card', value: 'Debit Card' },
-        { text: 'Check', value: 'Check' },
-        { text: 'Deposit', value: 'Deposit' }
-      ],
-      transactionDatePicker: false
-    }),
-    methods: {
-      saveTransaction: function () {
-        console.log('Saving transaction record:')
-        // TODO: wire up Vuex action
+export default {
+  name: 'EditTransaction',
+  data: () => ({
+    dialog: false,
+    transaction: {
+      id: null,
+      transactionDate: null,
+      transactionType: null,
+      description: '',
+      notes: '',
+      charge: 0.0,
+      deposit: 0.0
+    },
+    transactionTypes: [
+      { text: 'Credit Card', value: 'Credit Card' },
+      { text: 'Debit Card', value: 'Debit Card' },
+      { text: 'Check', value: 'Check' },
+      { text: 'Deposit', value: 'Deposit' }
+    ],
+    transactionDatePicker: false
+  }),
+  methods: {
+    saveTransaction: function () {
+      console.log('Saving transaction record:')
+      // TODO: wire up Vuex action
 
-        this.dialog = false
-      },
-      showEditTransactionDialog: function () {
-        this.transaction.transactionDate = this.getCurrentDate()
-        this.dialog = true
-      },
-      getCurrentDate: function () {
-        const dt = new Date(Date.now())
-        let month = '' + (dt.getMonth() + 1)
-        let day = '' + dt.getDate()
-        let year = dt.getFullYear()
+      this.dialog = false
+    },
+    showEditTransactionDialog: function () {
+      this.transaction.transactionDate = this.getCurrentDate()
+      this.dialog = true
+    },
+    getCurrentDate: function () {
+      const dt = new Date(Date.now())
+      let month = '' + (dt.getMonth() + 1)
+      let day = '' + dt.getDate()
+      let year = dt.getFullYear()
 
-        if (month.length < 2) month = '0' + month
-        if (day.length < 2) day = '0' + day
+      if (month.length < 2) month = '0' + month
+      if (day.length < 2) day = '0' + day
 
-        return [year, month, day].join('-')
-      }
+      return [year, month, day].join('-')
     }
   }
+}
 </script>
 
 <style>

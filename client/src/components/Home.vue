@@ -94,35 +94,34 @@
 </template>
 
 <script>
-  import Transactions from './Transactions.vue'
-  import EditTransaction from './EditTransactions.vue'
+import Transactions from './Transactions.vue'
+import EditTransaction from './EditTransactions.vue'
 
-  export default {
-    name: 'Home',
-    components: {
-      Transactions,
-      EditTransaction
+export default {
+  name: 'Home',
+  components: {
+    Transactions,
+    EditTransaction
+  },
+  data: () => ({
+    dialog: false,
+    drawer: null,
+    menuItems: [
+      { icon: 'contacts', text: 'Add Transaction' },
+      { icon: 'history', text: 'Current Month' },
+      { icon: 'content_copy', text: 'Notes' },
+      { icon: 'settings', text: 'Settings' },
+      { icon: 'chat_bubble', text: 'Send feedback' },
+      { icon: 'help', text: 'Help' }
+    ]
+  }),
+  methods: {
+    menuAction: function () {
+      // TODO
     },
-    data: () => ({
-      dialog: false,
-      drawer: null,
-      menuItems: [
-        { icon: 'contacts', text: 'Add Transaction' },
-        { icon: 'history', text: 'Current Month' },
-        { icon: 'content_copy', text: 'Notes' },
-        { icon: 'settings', text: 'Settings' },
-        { icon: 'chat_bubble', text: 'Send feedback' },
-        { icon: 'help', text: 'Help' }
-      ]
-    }),
-    methods: {
-      menuAction: function () {
-        // TODO
-      },
-      showProfile: function () {
-        console.log('show profile clicked!')
-      }
+    showProfile: function () {
+      console.log('show profile clicked!')
     }
   }
+}
 </script>
-
