@@ -7,13 +7,12 @@
       <v-spacer></v-spacer>
       <v-flex xs12 sm6 offset-sm3>
         <v-text-field
-          label="email"
+          label="E-mail"
           v-model="email"
           v-bind:rules="emailRules"
           required>
         </v-text-field>
       </v-flex>
-
       <v-flex xs12 sm6 offset-sm3>
         <v-text-field
           label="Password"
@@ -29,8 +28,12 @@
       </v-flex>
     </v-layout>
     <v-snackbar
-      :timeout="6000" :top="true" v-model="showAlert">
-      {{ message }}
+      :timeout="6000"
+      :top="true"
+      v-model="showAlert"
+    >
+      {{ loginError }}
+      <v-btn flat color="pink" v-on:click="showAlert = false">Close</v-btn>
     </v-snackbar>
   </v-container>
 </template>
@@ -43,8 +46,8 @@ export default {
       message: '',
       email: '',
       emailRules: [
-        v => !!v || 'Email is required',
-        v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Email must be valid'
+        v => !!v || 'E-mail is required',
+        v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
       ],
       password: '',
       passwordRules: [
@@ -52,24 +55,37 @@ export default {
       ]
     }
   },
+  computed: {
+    isLoggedIn () {
+      return this.$store.getters.isLoggedIn
+    },
+    loginError () {
+      return this.$store.getters.loginError
+    }
+  },
   methods: {
     login: function () {
       const vm = this
-      if (vm.password === 'test111') {
-        this.$router.push({path: '/'})
-      } else {
-        // show alert to user
-        vm.showAlert = true
-        vm.message = 'Email or Password is invalid'
+      const payload = {
+        email: this.email,
+        password: this.password
       }
+      this.$store.dispatch('logInUser', payload)
+        .then(() => {
+          if (vm.isLoggedIn) {
+            this.$router.push({ path: '/' })
+          } else {
+            vm.showAlert = true
+          }
+        })
     },
     cancel: function () {
-      console.log('User does not want to login')
+      console.log('The user does not want to login!')
     }
   }
 }
 </script>
 
-<style scoped>
+<style>
 
 </style>

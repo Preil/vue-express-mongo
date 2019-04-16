@@ -24,56 +24,55 @@ const state = {
 const getters = {
   transactionsByMonth: state => state.transactions,
   balanceCharges: state => state.balanceCharges,
-  balanceDeposits: state.balanceDeposits
+  balanceDeposits: state => state.balanceDeposits
 }
 
 const actions = {
-  getTransactionsByMonth({commit, state, rootState}, payload) {
-    commit('transactinsByMonth', [])
+  getTransactionsByMonth ({commit, state, rootState}, payload) {
+    commit('transactionsByMonth', [])
 
-    //will make API here
-
+    // will make API here
   },
 
-  getPreviousMonthsBalances({commit, state, rootState}, payload) {
+  getPreviousMonthsBalances ({commit, state, rootState}, payload) {
     commit('transactionsByMonth', [])
     // will make API here
     commit('balanceCharges', 0)
     commit('balanceDeposits', 0)
   },
 
-  async gotoMonth({commit}, increment) {
+  async gotoMonth ({commit}, increment) {
     commit('gotoMonth', increment)
   },
 
-  async gotoCurrentMonth({commit}) {
+  async gotoCurrentMonth ({commit}) {
     commit('gotoCurrentMonth')
   }
 }
 
 const mutations = {
-  transactionsByMonth(state, data) {
-    //Starting by cleaning array
+  transactionsByMonth (state, data) {
+    // Starting by cleaning array
     state.transactions = []
     if (data && data.length > 0) {
       data.forEach(tx => {
         state.transactions.push(mapTransaction(tx, state))
       })
     }
-    console.log('Transacthions by month mutated: ', state.transactions)
+    console.log('Transactions by month mutated: ', state.transactions)
   },
 
-  balanceCharges(state, data) {
+  balanceCharges (state, data) {
     state.balanceCharges = data
   },
 
-  balanceDeposits(state, data) {
+  balanceDeposits (state, data) {
     state.balanceDeposits = data
   },
 
-  gotoMonth(state, increment) {
-    let newMonth = state.currentMonth += increment;
-    //Sanity checks now
+  gotoMonth (state, increment) {
+    let newMonth = state.currentMonth += increment
+    // Sanity checks now
     if (newMonth > 12) {
       newMonth = 1
       state.currentYear += 1
@@ -84,16 +83,15 @@ const mutations = {
     state.currentMonth = newMonth
   },
 
-  gotoCurrentMonth(state) {
+  gotoCurrentMonth (state) {
     let dt = new Date(Date.now())
     state.currentMonth = dt.getUTCMonth() + 1
     state.currentYear = dt.getUTCFullYear()
   }
 
-
 }
 
-function mapTransaction(tx, state) {
+function mapTransaction (tx, state) {
   const transDate = new Date(tx.transactionDate)
   const months = state.months
   let transaction = {
@@ -107,7 +105,7 @@ function mapTransaction(tx, state) {
   return transaction
 }
 
-function moneyFormatter(amount) {
+function moneyFormatter (amount) {
   let formatter = new Intl.NumberFormat('en-Us', {
     style: 'currency',
     currency: 'USD',
@@ -117,7 +115,7 @@ function moneyFormatter(amount) {
   return formatter.format(amount)
 }
 
-function calcRunningBalance(tx, state) {
+function calcRunningBalance (tx, state) {
   if (tx && tx.charge > 0) {
     state.balanceCharges += tx.charge
   } else if (tx && tx.deposit > 0) {

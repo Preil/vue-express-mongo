@@ -1,5 +1,5 @@
 const state = {
-  email: '',
+  email: 'usertest',
   userId: null,
   isLoggedIn: false,
   loginError: ''
@@ -12,32 +12,33 @@ const getters = {
 }
 
 const actions = {
-  loginUser({commit}, payload) {
-    //see implementation next
+  logInUser ({commit}, payload) {
+    // see implementation next
     if (payload.email === 'mail@mail.com' && payload.password === '1234') {
-      //simulating getting back a valid userId
+      // simulating getting back a valid userId
       payload.userId = '5c9283394bd63c23e83a96b8'
-      commit(loginUser, payload)
+      commit('logInUser', payload)
     } else {
-      commit(loginError)
+      commit('loginError')
     }
   }
 }
 
 const mutations = {
 
-  logInUser(state, payload){
+  logInUser (state, payload) {
     state.email = payload.email
     state.userId = payload.userId
     state.isLoggedIn = true
   },
 
-  loginError(state) {
+  loginError (state) {
     state.isLoggedIn = false
     state.loginError = 'Email or password is invalid'
   }
 
 }
+
 export default {
   state,
   getters,
