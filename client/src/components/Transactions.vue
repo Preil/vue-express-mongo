@@ -69,83 +69,73 @@
 </template>
 
 <script>
-export default {
-
-  computed: {
-    currentMonth () {
-      return this.$store.state.transactions.currentMonth
+  export default {
+    computed: {
+      currentMonth () {
+        return this.$store.state.transactions.currentMonth
+      },
+      currentYear () {
+        return this.$store.state.transactions.currentYear
+      },
+      months () {
+        return this.$store.state.transactions.months
+      },
+      items () {
+        return this.$store.getters.transactionsByMonth
+      },
+      balanceCharges () {
+        return this.$store.getters.balanceCharges
+      },
+      balanceDeposits () {
+        return this.$store.getters.balanceDeposits
+      }
     },
-    currentYear () {
-      return this.$store.state.transactions.currentYear
+    data () {
+      return {
+        max25chars: (v) => v.length <= 25 || 'Input too long!',
+        search: '',
+        pagination: {},
+        headers: [
+          { text: 'Date', align: 'center', sortable: false, value: 'date' },
+          { text: 'Type', align: 'center', sortable: false, value: 'type' },
+          { text: 'Description', align: 'center', sortable: false, value: 'description' },
+          { text: 'Charge (-)', align: 'center', sortable: false, value: 'paymentAmt' },
+          { text: 'Deposit (+)', align: 'center', sortable: false, value: 'depositAmt' },
+          { text: 'Balance', align: 'center', sortable: false, value: 'balance' }
+        ]
+      }
     },
-
-    months () {
-      return this.$store.state.transactions.months
+    methods: {
+      getTransactionsByMonth: function () {
+        this.$store.dispatch('getTransactionsByMonth')
+      },
+      getPreviousMonthsBalances: function () {
+        this.$store.dispatch('getPreviousMonthsBalances')
+      },
+      gotoMonth: function (increment) {
+        this.$store.dispatch('gotoMonth', increment).then(() => {
+          // Load selected month transaction data now...
+          this.getPreviousMonthsBalances()
+          this.getTransactionsByMonth()
+        })
+      },
+      gotoCurrentMonth: function () {
+        this.$store.dispatch('gotoCurrentMonth').then(() => {
+          // Load selected month transaction data now...
+          this.getPreviousMonthsBalances()
+          this.getTransactionsByMonth()
+        })
+      }
     },
+    mounted: async function () {
+      // const me = this
+      await this.getPreviousMonthsBalances()
+      await console.log(this.balanceCharges)
+      await console.log(this.balanceDeposits)
 
-    items () {
-      return this.$store.state.transactionsByMonth
-    },
-
-    balanceCharges () {
-      return this.$store.getters.balanceCharges
-    },
-
-    balanceDeposits () {
-      return this.$store.getters.balanceDeposits
+      await this.getTransactionsByMonth()
     }
-  },
-
-  data () {
-    return {
-      max25chars: (v) => v.length <= 25 || 'Input too long!',
-      search: '',
-      pagination: {},
-      headers: [
-        {text: 'Date', align: 'center', sortable: false, value: 'date'},
-        {text: 'Type', align: 'center', sortable: false, value: 'type'},
-        {text: 'Description', align: 'center', sortable: false, value: 'description'},
-        {text: 'Charge (-)', align: 'center', sortable: false, value: 'paymentAmt'},
-        {text: 'Deposit (+)', align: 'center', sortable: false, value: 'depositAmt'},
-        {text: 'Balance', align: 'center', sortable: false, value: 'balance'}
-      ]
-    }
-  },
-
-  methods: {
-    getTransactionsByMonth: function () {
-      this.$store.dispatch('getTransactionsByMonth')
-    },
-
-    getPreviousMonthsBalances: function () {
-      this.$store.dispatch('getPreviousMonthsBalances')
-    },
-
-    gotoMonth: function (increment) {
-      this.$store.dispatch('gotoMonth').then(() => {
-        // load selected month transactions now...
-        this.getPreviousMonthsBalances()
-        this.getTransactionsByMonth()
-      })
-    },
-
-    gotoCurrentMonth: function () {
-      this.$store.dispatch('gotoCurrentMonth').then(() => {
-        // load selected month transactions now...
-        this.getPreviousMonthsBalances()
-        this.getTransactionsByMonth()
-      })
-    }
-  },
-
-  mounted: async function () {
-    // const me = this
-    await this.getPreviousMonthsBalances()
-    await console.log(this.balanceCharges)
-    await console.log(this.balanceDeposits)
-    await this.getTransactionsByMonth()
   }
-}
 </script>
 
 <style scoped>
