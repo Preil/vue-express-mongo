@@ -1,61 +1,56 @@
-const Transaction = require('../../models/transaction');
-const mongoose = require('mongoose');
+const Transaction = require('../../models/transaction')
+const mongoose = require('mongoose')
 
 module.exports = function (router) {
-
-    // Get transaction for given year, month, by UserId
+    // Get transactions for given year and month, by userId...
     router.get('/transaction/:year/:month', function (req, res) {
-        const userId = req.get('userId');
-        const month = req.params.month - 1; // Js month is zero based
-        const year = req.params.year;
-
-        const startDt = new Date(Date.UTC(year, month, 1, 0, 0, 0));
-        const endDt = new Date(Date.UTC(year, month + 1, 1, 0, 0, 0));
+        const userId = req.get('userId')
+        const month = req.params.month - 1 // JS months are zero-based
+        const year = req.params.year
+        const startDt = new Date(Date.UTC(year, month, 1, 0, 0, 0))
+        const endDt = new Date(Date.UTC(year, month + 1, 1, 0, 0, 0))
 
         const qry = {
-            userId: mongoose.Types.ObjectId(userId),
+            userId: userId,
             transactionDate: {
                 $gte: startDt,
                 $lt: endDt
             }
-        };
-
+        }
         Transaction.find(qry)
-            .sort({transactionDate: 1})
+            .sort({ 'transactionDate': 1 })
             .exec()
             .then(docs => res.status(200)
                 .json(docs))
             .catch(err => res.status(500)
                 .json({
-                    message: 'Error transactions for user',
+                    message: 'Error finding transactions for user',
                     error: err
-                })
-            );
+                }))
+    })
 
-    });
-
-    // Get transaction running balance for a specific user
+    // Get transactions running balance for a specific user...
     router.get('/transaction/balance/:year/:month', function (req, res) {
-        const userId = req.get('userId');
-        const month = req.params.month - 1;
-        const year = req.params.year;
-        const endDt = new Date(Date.UTC(year, month, 1, 0, 0, 0));
+        const userId = req.get('userId')
+        const month = req.params.month -1 // JS months are zero-based
+        const year = req.params.year
+        const endDt = new Date(Date.UTC(year, month+1, 1))
         const pipeline = [
             {
                 $match: {
-                    userId: mongoose.Types.ObjectId(userId),
+                    userId: userId
                 }
             },
             {
                 $match: {
-                    transactionDate: {$lt: endDt}
+                    transactionDate: { $lt: endDt }
                 }
             },
             {
                 $group: {
                     _id: null,
-                    charges: {$sum: '$charge'},
-                    deposites: {$sum: '$deposit'}
+                    charges: { $sum: '$charge' },
+                    deposits: { $sum: '$deposit' }
                 }
             }
         ]
@@ -65,17 +60,17 @@ module.exports = function (router) {
                 .json(docs))
             .catch(err => res.status(500)
                 .json({
-                    message: 'Error finding transaction for user',
+                    message: 'Error finding transactions for user',
                     error: err
-                })
-            )
-    });
-
-    router.post('/transaction', function (req, res) {
-        let transaction = new Transaction(req.body);
-        transaction.save(function (err, transaction) {
-            if (err) return console.log(err);
-            res.status(200).json(transaction);
-        });
+                }))
     })
-};
+
+    // Create new transaction document...
+    router.post('/transaction', function (req, res) {
+        let transaction = new Transaction(req.body)
+        transaction.save(function (err, transaction) {
+            if (err) return console.log(err)
+            res.status(200).json(transaction)
+        })
+    })
+}
